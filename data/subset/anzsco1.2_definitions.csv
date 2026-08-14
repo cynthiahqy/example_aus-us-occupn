@@ -1,0 +1,7 @@
+"anzsco_code","title","skill_level","major_code","major_title","submajor_code","submajor_title","minor_code","minor_title","unit_code","unit_title"
+"111111","Chief Executive or Managing Director","1","1","MANAGERS","11","Chief Executives, General Managers and Legislators","111","Chief Executives, General Managers and Legislators","1111","Chief Executives and Managing Directors"
+"111211","Corporate General Manager","1","1","MANAGERS","11","Chief Executives, General Managers and Legislators","111","Chief Executives, General Managers and Legislators","1112","General Managers"
+"111311","Local Government Legislator","1","1","MANAGERS","11","Chief Executives, General Managers and Legislators","111","Chief Executives, General Managers and Legislators","1113","Legislators"
+"111312","Member of Parliament","1","1","MANAGERS","11","Chief Executives, General Managers and Legislators","111","Chief Executives, General Managers and Legislators","1113","Legislators"
+"111399","Legislators nec","1","1","MANAGERS","11","Chief Executives, General Managers and Legislators","111","Chief Executives, General Managers and Legislators","1113","Legislators"
+"139999","Specialist Managers nec","1","1","MANAGERS","13","Specialist Managers","139","Miscellaneous Specialist Managers","1399","Other Specialist Managers"

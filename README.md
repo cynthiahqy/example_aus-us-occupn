@@ -66,6 +66,20 @@ Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from thi
 | `ISCO-08 88 EN Skills .xlsx` | ISCO-08/ISCO-88 major and sub-major groups mapped to ILO skill levels (1–4) and ILOSTAT's aggregated skill categories. |
 | `ISCO-08 EN Vol 1.pdf` | ILO's full ISCO-08 Volume 1 publication (structure, definitions and correspondence tables) — the source document the spreadsheets above are extracted from. |
 
+## Illustrative subset (`code/subset/`, `data/subset/`)
+
+Per [#2](https://github.com/cynthiahqy/example_aus-us-occupn/issues/2), the vignette works with a deliberately small subset of occupations rather than the full ANZSCO (~1,000+ occupations) or SOC (840 codes): **ISCO-08 Sub-Major Group 11 "Chief Executives, Senior Officials and Legislators"** (unit groups `1111`, `1112`, `1113`, `1114`, `1120`) — including `1113` Traditional Chiefs and Heads of Villages specifically because it has **no ANZSCO correspondence**, a useful illustration of a target key with no corresponding source key (see [paper_crossmap-def#5](https://github.com/cynthiahqy/paper_crossmap-def/issues/5)).
+
+`code/subset/build_subset_lookups.R` derives this subset's data assets from the raw files in `data/external/` and writes them to `data/subset/` (run from the repo root: `Rscript code/subset/build_subset_lookups.R`):
+
+| File | Contents |
+|---|---|
+| `isco08_definitions.csv` | ISCO-08 definitions for the 5 anchor unit groups. |
+| `anzsco1.2_definitions.csv` | ANZSCO occupation definitions for the codes the crosswalk subset actually links to (6 codes). ANZSCO's structure file has no free-text definitions, only titles/hierarchy/skill level. |
+| `soc2010_definitions.csv` | SOC 2010 definitions for the codes the crosswalk subset links to (6 codes). |
+| `anzsco_to_isco08_crosswalk.csv` | ANZSCO→ISCO-08 crosswalk subset, filtered to the 5 anchor ISCO-08 codes. `1113`'s row has `anzsco_code` recoded from ABS's literal `"0"`/"No Correspondence" to `NA` — see the linked issue for why `NA`, not `0` or an omitted row, is the correct representation here. |
+| `soc2010_to_isco08_crosswalk.csv` | SOC 2010→ISCO-08 crosswalk subset, filtered to the same 5 anchor ISCO-08 codes. |
+
 ## Background
 
 Both BLS and ABS publish official but **unweighted, many-to-many** correspondences between their national occupation classification and ISCO-08. Neither agency publishes a split proportion for the ambiguous links, so harmonising actual occupation *counts* (not just categories) across SOC and ANZSCO via ISCO-08 requires supplying weights — the scenario xmap#14 proposes to illustrate using committee-style semantic-similarity judgments as `xmap_tbl` weights.
