@@ -1,0 +1,5 @@
+# Copy this file to .Renviron (gitignored) and fill in your key.
+# R automatically loads .Renviron from the working directory at session
+# startup; the LLM weights prototype also calls readRenviron() explicitly
+# so it works regardless of where Quarto sets the execution directory.
+OPENAI_API_KEY=

@@ -1,0 +1,185 @@
+---
+title: "Prototype: LLM-generated semantic-similarity weights"
+subtitle: "Making a many-to-many crosswalk weighting judgment explicit and reproducible"
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  echo: true
+---
+
+## What this is
+
+A small prototype for [example_aus-us-occupn#3](https://github.com/cynthiahqy/example_aus-us-occupn/issues/3): can an LLM stand in for the hand-authored "committee judgment" step in the `xmap` vignette, for splitting a many-to-many crosswalk link into weights?
+
+This is **not** a benchmark or a validation exercise — there's no ground truth here, and the vignette's own "committee" weights are themselves illustrative, not a real expert panel's output. The point is narrower: a semantic-similarity judgment about which occupation is "more like" which can be made **explicit and reproducible** — a documented prompt, a specific model, a specific date, producing a specific weight — instead of an unrecorded judgment call.
+
+The two-round prompt framework below is adapted from Ma, Huang & Haensch (2025), ["Can Large Language Models Advance Crosswalks? The Case of Danish Occupation Codes"](https://aclanthology.org/2025.naacl-srw.38/), NAACL 2025 SRW. We only need their **Round 1** (similarity rating) — our subset already has real ABS/BLS-published links, so unlike their setup (searching the full cross-product of two codebooks), we only need to rate the links that already exist, then turn the ratings into split weights.
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+library(ellmer)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(purrr)
+
+readRenviron(here::here(".Renviron"))
+```
+
+```{r}
+#| label: paths
+subset_dir <- here::here("data", "subset")
+```
+
+## Load the subset crosswalks and definitions
+
+```{r}
+#| label: load-data
+#| message: false
+anzsco_isco <- read_csv(file.path(subset_dir, "anzsco_to_isco08_crosswalk.csv"), show_col_types = FALSE)
+soc_isco <- read_csv(file.path(subset_dir, "soc2010_to_isco08_crosswalk.csv"), show_col_types = FALSE)
+
+isco_defs <- read_csv(file.path(subset_dir, "isco08_definitions.csv"), show_col_types = FALSE) |>
+  transmute(code = as.character(isco08_code), title, definition)
+
+anzsco_defs <- read_csv(file.path(subset_dir, "anzsco1.2_definitions.csv"), show_col_types = FALSE) |>
+  transmute(code = as.character(anzsco_code), title, definition)
+
+soc_defs <- read_csv(file.path(subset_dir, "soc2010_definitions.csv"), show_col_types = FALSE) |>
+  transmute(code = soc2010_code, title, definition)
+```
+
+## Find the many-to-many links that need a weight
+
+We only need to rate a link where its *source* occupation (the one supplying real count data — ANZSCO for Australia, SOC for the USA) maps to more than one ISCO-08 target. A source with exactly one target needs no judgment call: the full weight is 1.
+
+```{r}
+#| label: many-to-many-groups
+anzsco_many <- anzsco_isco |>
+  filter(!is.na(anzsco_code)) |>
+  add_count(anzsco_code, name = "n_targets") |>
+  filter(n_targets > 1) |>
+  transmute(source_code = as.character(anzsco_code), target_code = as.character(isco08_code))
+
+soc_many <- soc_isco |>
+  add_count(soc2010_code, name = "n_targets") |>
+  filter(n_targets > 1) |>
+  transmute(source_code = as.character(soc2010_code), target_code = as.character(isco08_code))
+
+links_to_rate <- bind_rows(
+  anzsco_many |> mutate(source_scheme = "ANZSCO"),
+  soc_many |> mutate(source_scheme = "SOC2010")
+)
+
+links_to_rate
+```
+
+## Round 1 prompt (adapted from Ma, Huang & Haensch 2025)
+
+Same question and 5-point scale as the paper's Round 1, with our own definition text substituted in for `{code1}`/`{code2}`, and a constrained `type_enum` output so the model can only answer A-E.
+
+```{r}
+#| label: prompt-template
+similarity_type <- type_enum(
+  values = c("A", "B", "C", "D", "E"),
+  description = paste(
+    "Similarity rating: A = Extremely similar, B = Very similar,",
+    "C = Moderately similar, D = Slightly similar, E = Not similar at all"
+  )
+)
+
+build_prompt <- function(title1, def1, title2, def2) {
+  glue::glue(
+    "How similar do you think these two occupational classification codes are ",
+    "in terms of tasks, skills, and responsibilities? Please respond with only ",
+    "the option letter out of 'A', 'B', 'C', 'D', or 'E'.\n\n",
+    "Code1: {title1} - {def1}\n",
+    "Code2: {title2} - {def2}\n\n",
+    "Options:\n",
+    "A Extremely similar\n",
+    "B Very similar\n",
+    "C Moderately similar\n",
+    "D Slightly similar\n",
+    "E Not similar at all"
+  )
+}
+```
+
+## Run Round 1 for every source-target pair that needs a weight
+
+One model, one call per pair — small enough (`r nrow(links_to_rate)` pairs) that every rating can be read directly rather than automated further (no Round 2 needed here).
+
+```{r}
+#| label: model-config
+llm_model <- "gpt-4o-mini"
+run_date <- Sys.Date()
+```
+
+```{r}
+#| label: run-round-1
+lookup_def <- function(code, scheme) {
+  tbl <- switch(scheme, ANZSCO = anzsco_defs, SOC2010 = soc_defs, ISCO08 = isco_defs)
+  tbl[tbl$code == code, ]
+}
+
+rate_pair <- function(source_code, source_scheme, target_code) {
+  src <- lookup_def(source_code, source_scheme)
+  tgt <- lookup_def(target_code, "ISCO08")
+
+  chat <- chat_openai(model = llm_model, echo = FALSE)
+  rating <- chat$chat_structured(
+    build_prompt(src$title, src$definition, tgt$title, tgt$definition),
+    type = similarity_type
+  )
+
+  tibble(
+    source_scheme, source_code, target_code,
+    rating,
+    model = llm_model, date = run_date
+  )
+}
+
+ratings <- links_to_rate |>
+  pmap(function(source_code, target_code, source_scheme) {
+    rate_pair(source_code, source_scheme, target_code)
+  }) |>
+  list_rbind()
+
+ratings
+```
+
+## Convert ratings to normalized weights
+
+```{r}
+#| label: normalize-weights
+rating_score <- c(A = 1, B = 0.75, C = 0.5, D = 0.25, E = 0)
+
+llm_weights <- ratings |>
+  mutate(score = rating_score[rating]) |>
+  group_by(source_scheme, source_code) |>
+  mutate(weight = score / sum(score)) |>
+  ungroup() |>
+  select(source_scheme, source_code, target_code, rating, weight, model, date)
+
+llm_weights
+```
+
+## What this produces
+
+For each many-to-many source occupation, a set of weights across its linked ISCO-08 targets — generated by one documented prompt, one named model, on one recorded date. That's the whole point: the judgment call that would otherwise be an unrecorded line in someone's head (or an unexplained number in a script) is now a re-runnable artifact.
+
+```{r}
+#| label: save-output
+write_csv(llm_weights, file.path(subset_dir, "llm_similarity_weights_prototype.csv"))
+```
+
+## Caveats (kept brief, per Ma, Huang & Haensch 2025)
+
+- **One model, one run.** The paper found real variability across models (F1 41-70%) and low inter-model agreement (Cohen's κ < 60% between every pair). A different model, or the same model on a different day, could rate these pairs differently.
+- **Not a replacement for review.** The paper's own framing is an assisted, human-in-the-loop workflow, not full automation. For a subset this small, a human can and should read every rating above directly rather than trust it unreviewed.
+- **Not validated against anything.** There is no ground truth to check these weights against — this demonstrates that the judgment can be made explicit and reproducible, not that it's more (or less) accurate than any other method.

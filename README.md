@@ -80,6 +80,14 @@ Per [#2](https://github.com/cynthiahqy/example_aus-us-occupn/issues/2), the vign
 | `anzsco_to_isco08_crosswalk.csv` | ANZSCO→ISCO-08 crosswalk subset, filtered to the 5 anchor ISCO-08 codes. `1113`'s row has `anzsco_code` recoded from ABS's literal `"0"`/"No Correspondence" to `NA` — see the linked issue for why `NA`, not `0` or an omitted row, is the correct representation here. |
 | `soc2010_to_isco08_crosswalk.csv` | SOC 2010→ISCO-08 crosswalk subset, filtered to the same 5 anchor ISCO-08 codes. |
 
+## LLM-generated similarity weights prototype (`code/llm_weights/`)
+
+Per [#3](https://github.com/cynthiahqy/example_aus-us-occupn/issues/3): a small Quarto prototype exploring whether an LLM can generate the same kind of semantic-similarity weight the vignette's "committee judgment" step calls for — not as a replacement or a validated alternative (there's no ground truth to check either against), but to show that the judgment call can be made **explicit and reproducible**: one documented prompt, one named model, one recorded date, producing a specific weight.
+
+`code/llm_weights/llm_similarity_weights.qmd` (rendered: `llm_similarity_weights.html`) uses [`ellmer`](https://ellmer.tidyverse.org/) to run the Round 1 prompt from Ma, Huang & Haensch (2025), ["Can Large Language Models Advance Crosswalks? The Case of Danish Occupation Codes"](https://aclanthology.org/2025.naacl-srw.38/) (NAACL 2025 SRW), against every many-to-many source→target pair already present in the two crosswalk subsets, and normalizes the resulting A–E similarity ratings into split weights. Output: `data/subset/llm_similarity_weights_prototype.csv`.
+
+Requires an OpenAI API key in a project-local `.Renviron` (gitignored — copy `.Renviron.example` and fill in `OPENAI_API_KEY`), loaded via `readRenviron(".Renviron")` at the top of the `.qmd`.
+
 ## Background
 
 Both BLS and ABS publish official but **unweighted, many-to-many** correspondences between their national occupation classification and ISCO-08. Neither agency publishes a split proportion for the ambiguous links, so harmonising actual occupation *counts* (not just categories) across SOC and ANZSCO via ISCO-08 requires supplying weights — the scenario xmap#14 proposes to illustrate using committee-style semantic-similarity judgments as `xmap_tbl` weights.
