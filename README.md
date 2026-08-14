@@ -34,8 +34,9 @@ Once this checklist is done, the next step is porting the real crosswalks into `
 - Correspondences and supporting documentation for **ANZSCO 1.2 ↔ ISCO-08** were all downloaded from the Downloads tab of: <https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1220.0Main+Features12013,%20Version%201.2>
 - The **SOC 2010 ↔ ISCO-08** crosswalk and its methodology write-up (`isco_soc_crosswalk.xls`, `isco_soc_crosswalk_process.pdf`) were downloaded from: <https://www.bls.gov/soc/soccrosswalks.htm>
 - The SOC 2010 classification background (`soc_2010_user_guide.pdf`, `soc_2010_definitions.pdf`/`.xls`, `soc_structure_2010.pdf`/`.xls`) were downloaded from "Downloadable Materials" on: <https://www.bls.gov/soc/2010/home.htm>
+- **ISCO-08** (the target classification): structure/definitions, the ISCO-08↔ISCO-88 index, and the skill-level mapping were all downloaded from: <https://isco-ilo.netlify.app/en/isco-08/>
 
-Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from this tooling environment with a 403; ABS was reachable but downloaded manually alongside it for consistency). Licence: ABS content is published under Creative Commons Attribution 4.0 International; BLS content is a US federal government work, presumptively public domain under 17 U.S.C. §105.
+Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from this tooling environment with a 403; ABS and the ILO ISCO-08 site were reachable but downloaded manually alongside it for consistency). Licence: ABS content is published under Creative Commons Attribution 4.0 International; BLS content is a US federal government work, presumptively public domain under 17 U.S.C. §105; ILO ISCO-08 content licence not yet confirmed — check the site before packaging.
 
 ### `data/external/anzsco/`
 
@@ -54,6 +55,16 @@ Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from thi
 | `soc_2010_user_guide.pdf` | SOC 2010 user guide — background on the SOC 2010 classification structure. |
 | `soc_2010_definitions.pdf` / `.xls` | SOC 2010 definitions — full text definitions for each SOC 2010 occupation code. |
 | `soc_structure_2010.pdf` / `.xls` | SOC 2010 classification structure — the hierarchy of major/minor/broad groups down to detailed occupation codes. |
+
+### `data/external/isco/`
+
+| File | Contents |
+|---|---|
+| `ISCO-08 EN Structure and definitions.xlsx` | The ISCO-08 classification itself: one row per level (major/sub-major/minor/unit group) with code, title, definition, included/excluded tasks and occupations, and notes. |
+| `ISCO-08 EN.csv` | Tidy long-format version of the same ISCO-08 hierarchy — one row per unit group with its major/sub-major/minor group codes and labels alongside it (also includes ISCO-88 and ISCO-68 rows for reference). |
+| `ISCO-08 -88 EN Index.xlsx` | Alphabetical index of ~7,000 occupation titles, each mapped to its ISCO-08 and (predecessor) ISCO-88 unit group code. |
+| `ISCO-08 88 EN Skills .xlsx` | ISCO-08/ISCO-88 major and sub-major groups mapped to ILO skill levels (1–4) and ILOSTAT's aggregated skill categories. |
+| `ISCO-08 EN Vol 1.pdf` | ILO's full ISCO-08 Volume 1 publication (structure, definitions and correspondence tables) — the source document the spreadsheets above are extracted from. |
 
 ## Background
 
