@@ -32,7 +32,8 @@ Once this checklist is done, the next step is porting the real crosswalks into `
 ## Download provenance
 
 - Correspondences and supporting documentation for **ANZSCO 1.2 ↔ ISCO-08** were all downloaded from the Downloads tab of: <https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1220.0Main+Features12013,%20Version%201.2>
-- Correspondences and supporting documentation for **SOC 2010 ↔ ISCO-08** were downloaded from "Downloadable Materials" on: <https://www.bls.gov/soc/2010/home.htm>
+- The **SOC 2010 ↔ ISCO-08** crosswalk and its methodology write-up (`isco_soc_crosswalk.xls`, `isco_soc_crosswalk_process.pdf`) were downloaded from: <https://www.bls.gov/soc/soccrosswalks.htm>
+- The SOC 2010 classification background (`soc_2010_user_guide.pdf`) was downloaded from "Downloadable Materials" on: <https://www.bls.gov/soc/2010/home.htm>
 
 Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from this tooling environment with a 403; ABS was reachable but downloaded manually alongside it for consistency). Licence: ABS content is published under Creative Commons Attribution 4.0 International; BLS content is a US federal government work, presumptively public domain under 17 U.S.C. §105.
 
