@@ -1,0 +1,35 @@
+Source: https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1113+Legislators
+Retrieved: 2026-08-14 (via WebFetch, provided by user)
+
+UNIT GROUP 1113 LEGISLATORS
+
+Definition:
+LEGISLATORS represent the interests of people in constituencies as elected members of national, state and territory parliaments and local government authorities.
+
+Indicative Skill Level:
+Occupations require a level of skill commensurate with a bachelor degree or higher qualification. At least five years of relevant experience may substitute for the formal qualification (ANZSCO Skill Level 1).
+
+Tasks Include:
+- Developing policy and formulating legislation at various government levels
+- Assisting constituents with government-related matters
+- Investigating public concerns
+- Introducing proposals representing electoral interests
+- Issuing policy directions and exercising control
+- Attending community functions and gauging public opinion
+- Serving on parliamentary committees
+- Presenting petitions for concerned groups
+
+Occupations:
+
+111311 LOCAL GOVERNMENT LEGISLATOR
+Alternative titles: Alderman, Councillor
+Represents constituency interests as elected local government member.
+Specialisations include Mayor and Community Board Member (NZ).
+
+111312 MEMBER OF PARLIAMENT
+Alternative title: Parliamentarian
+Represents constituency interests as elected national, state, or territory parliament member.
+Specialisations include Prime Minister, Premier, Minister, and Senator.
+
+111399 LEGISLATORS NEC
+Covers legislators not elsewhere classified, including Aboriginal Community Council Members and Councillors of Aboriginal Land Councils (Aus).

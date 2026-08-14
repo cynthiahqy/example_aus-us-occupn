@@ -199,16 +199,48 @@ flatten_anzsco_hierarchy <- function(raw) {
   bind_rows(rows)
 }
 
+# The Structure file has no free-text definitions, only the hierarchy and a
+# skill-level rating (unlike ISCO-08/SOC, ABS doesn't publish these as a
+# downloadable structured file at all -- they're only on individual ANZSCO
+# "Unit Group" pages on abs.gov.au, e.g.
+# https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1111+Chief+Executives+and+Managing+Directors).
+# The raw retrieved text for each unit group in this subset is saved
+# verbatim in data/subset/raw/anzsco_unit_group_*.txt; this table is a
+# hand-transcribed, tidied summary of that text, keyed to each unit group.
+anzsco_unit_group_text <- tribble(
+  ~unit_code, ~unit_definition, ~unit_source_url,
+  "1111", "Chief Executives and Managing Directors determine, formulate and review the general policy, programs and the overall direction of organisations within the framework established by boards of directors and similar governing bodies.", "https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1111+Chief+Executives+and+Managing+Directors",
+  "1112", "General Managers plan, organise, direct, control and review the day-to-day operations and major functions of commercial, industrial, government and defence organisations through departmental managers and subordinate executives.", "https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1112+General+Managers",
+  "1113", "Legislators represent the interests of people in constituencies as elected members of national, state and territory parliaments and local government authorities.", "https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1113+Legislators",
+  "1399", "This unit group covers Specialist Managers not elsewhere classified.", "https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1399+Other+Specialist+Managers"
+)
+
+anzsco_occupation_text <- tribble(
+  ~anzsco_code, ~alternative_titles, ~occupation_description, ~specialisations,
+  "111111", "Chief Executive Officer", "Determines, formulates and reviews general policy and overall organisational direction within board-established frameworks.", "Director-General; Executive Director; Secretary (Government Department)",
+  "111211", "Chief Operating Officer", "Directs operations of commercial, industrial, or governmental organisations through departmental managers.", "Assistant Commissioner (Police); Hospital Administrator; Managing Editor; Trade Union Secretary",
+  "111311", "Alderman; Councillor", "Represents constituency interests as an elected local government member.", "Mayor; Community Board Member (NZ)",
+  "111312", "Parliamentarian", "Represents constituency interests as an elected national, state, or territory parliament member.", "Prime Minister; Premier; Minister; Senator",
+  "111399", NA_character_, "Covers legislators not elsewhere classified, including Aboriginal Community Council Members and Councillors of Aboriginal Land Councils (Aus).", NA_character_,
+  "139999", NA_character_, "Covers Specialist Managers not elsewhere classified.", "Airport Manager; Ambassador; Archbishop; Bishop; Harbour Master; Security Manager (Non-ICT)"
+)
+
 anzsco_definitions <- flatten_anzsco_hierarchy(anzsco_structure_raw) |>
   filter(occupation_code %in% anzsco_subset_codes) |>
+  left_join(anzsco_unit_group_text, by = "unit_code") |>
+  left_join(anzsco_occupation_text, by = c("occupation_code" = "anzsco_code")) |>
   transmute(
     anzsco_code = occupation_code,
     title = occupation_title,
+    alternative_titles,
+    definition = occupation_description,
+    specialisations,
     skill_level,
-    major_code, major_title,
-    submajor_code, submajor_title,
+    unit_code, unit_title, unit_definition,
     minor_code, minor_title,
-    unit_code, unit_title
+    submajor_code, submajor_title,
+    major_code, major_title,
+    source_url = unit_source_url
   ) |>
   arrange(anzsco_code)
 

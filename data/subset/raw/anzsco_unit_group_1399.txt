@@ -1,0 +1,28 @@
+Source: https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1399+Other+Specialist+Managers
+Retrieved: 2026-08-14 (via WebFetch, provided by user)
+
+UNIT GROUP 1399 - OTHER SPECIALIST MANAGERS
+
+Definition:
+This unit group covers Specialist Managers not elsewhere classified.
+
+Indicative Skill Level:
+Most occupations in this unit group have a level of skill commensurate with a bachelor degree or higher qualification. Additional qualifications or experience may be required (ANZSCO Skill Level 1).
+
+Key Occupations Include:
+The group encompasses Arts Administrators, Environmental Managers, Laboratory Managers, Quality Assurance Managers, and Sports Administrators.
+
+139999 SPECIALIST MANAGERS NEC
+
+Description:
+This occupation group covers Specialist Managers not elsewhere classified.
+
+Skill Level: 1
+
+Example Occupations Listed:
+- Airport Manager
+- Ambassador
+- Archbishop
+- Bishop
+- Harbour Master
+- Security Manager (Non-ICT)

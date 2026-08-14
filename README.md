@@ -75,7 +75,7 @@ Per [#2](https://github.com/cynthiahqy/example_aus-us-occupn/issues/2), the vign
 | File | Contents |
 |---|---|
 | `isco08_definitions.csv` | ISCO-08 definitions for the 5 anchor unit groups. |
-| `anzsco1.2_definitions.csv` | ANZSCO occupation definitions for the codes the crosswalk subset actually links to (6 codes). ANZSCO's structure file has no free-text definitions, only titles/hierarchy/skill level. |
+| `anzsco1.2_definitions.csv` | ANZSCO occupation definitions for the codes the crosswalk subset actually links to (6 codes). ANZSCO's downloadable structure file has no free-text definitions — only titles/hierarchy/skill level. The full definitions ABS *does* publish, but only as individual "Unit Group" pages on abs.gov.au (e.g. [`UNIT GROUP 1111 Chief Executives and Managing Directors`](https://www.abs.gov.au/ausstats/abs@.nsf/Product+Lookup/1220.0~2013,+Version+1.2~Chapter~UNIT+GROUP+1111+Chief+Executives+and+Managing+Directors)), not as one downloadable file. The raw retrieved text for the 4 relevant unit groups (1111, 1112, 1113, 1399) is saved verbatim in `data/subset/raw/anzsco_unit_group_*.txt`; the build script hand-transcribes that into the structured CSV. |
 | `soc2010_definitions.csv` | SOC 2010 definitions for the codes the crosswalk subset links to (6 codes). |
 | `anzsco_to_isco08_crosswalk.csv` | ANZSCO→ISCO-08 crosswalk subset, filtered to the 5 anchor ISCO-08 codes. `1113`'s row has `anzsco_code` recoded from ABS's literal `"0"`/"No Correspondence" to `NA` — see the linked issue for why `NA`, not `0` or an omitted row, is the correct representation here. |
 | `soc2010_to_isco08_crosswalk.csv` | SOC 2010→ISCO-08 crosswalk subset, filtered to the same 5 anchor ISCO-08 codes. |
