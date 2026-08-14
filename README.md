@@ -11,7 +11,7 @@ From [issue #14](https://github.com/cynthiahqy/xmap/issues/14#issuecomment-52928
 **1. `data-raw/` files (raw retrieved sources)**
 - [x] ANZSCO 2013 v1.2 classification structure file — `data/external/anzsco/1220.0 ANZSCO Version 1.2 Structure v3.xls`
 - [x] ANZSCO 2013 v1.2 → ISCO-08 v2 correspondence file — `data/external/anzsco/1220.0 ANZSCO Correspondence to ISCO-08 v2.xls`
-- [x] SOC 2010 classification structure file — `data/external/soc/soc_2010_user_guide.pdf`
+- [x] SOC 2010 classification structure file — `data/external/soc/soc_structure_2010.xls` (plus `soc_2010_definitions.xls` and `soc_2010_user_guide.pdf` for background)
 - [x] SOC 2010 → ISCO-08 crosswalk file — `data/external/soc/isco_soc_crosswalk.xls`
 - [x] BLS crosswalk methodology doc — `data/external/soc/isco_soc_crosswalk_process.pdf`
 - [ ] Converted/tidied CSV versions of the above where the source is `.xls`/`.xlsx`, following the existing `xmap` convention (see `data-raw/indstat_rev3_masked_subset.csv` as the pattern) — keeps diffs small and avoids shipping proprietary binary formats
@@ -33,7 +33,7 @@ Once this checklist is done, the next step is porting the real crosswalks into `
 
 - Correspondences and supporting documentation for **ANZSCO 1.2 ↔ ISCO-08** were all downloaded from the Downloads tab of: <https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1220.0Main+Features12013,%20Version%201.2>
 - The **SOC 2010 ↔ ISCO-08** crosswalk and its methodology write-up (`isco_soc_crosswalk.xls`, `isco_soc_crosswalk_process.pdf`) were downloaded from: <https://www.bls.gov/soc/soccrosswalks.htm>
-- The SOC 2010 classification background (`soc_2010_user_guide.pdf`) was downloaded from "Downloadable Materials" on: <https://www.bls.gov/soc/2010/home.htm>
+- The SOC 2010 classification background (`soc_2010_user_guide.pdf`, `soc_2010_definitions.pdf`/`.xls`, `soc_structure_2010.pdf`/`.xls`) were downloaded from "Downloadable Materials" on: <https://www.bls.gov/soc/2010/home.htm>
 
 Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from this tooling environment with a 403; ABS was reachable but downloaded manually alongside it for consistency). Licence: ABS content is published under Creative Commons Attribution 4.0 International; BLS content is a US federal government work, presumptively public domain under 17 U.S.C. §105.
 
@@ -52,6 +52,8 @@ Retrieved: 2026-08-14, by manual download (BLS blocks automated fetches from thi
 | `isco_soc_crosswalk.xls` | Official ISCO-08 × SOC 2010 crosswalk (approved July 2012; built from the ISCO-88↔SOC 2000 crosswalk mapped forward to SOC 2010 (840 codes) and ISCO-08 (425 codes)). |
 | `isco_soc_crosswalk_process.pdf` | Methodology write-up describing how the SOC↔ISCO crosswalk was constructed (guiding principles included checking ISCO skill levels against BLS education/training assignments, and a "parsimony" principle avoiding over-inclusion of incidental matches). |
 | `soc_2010_user_guide.pdf` | SOC 2010 user guide — background on the SOC 2010 classification structure. |
+| `soc_2010_definitions.pdf` / `.xls` | SOC 2010 definitions — full text definitions for each SOC 2010 occupation code. |
+| `soc_structure_2010.pdf` / `.xls` | SOC 2010 classification structure — the hierarchy of major/minor/broad groups down to detailed occupation codes. |
 
 ## Background
 
