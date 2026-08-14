@@ -73,3 +73,11 @@ Licence note: ABS content is typically published under Creative Commons Attribut
 Both BLS and ABS publish official but **unweighted, many-to-many** correspondences between their national occupation classification and ISCO-08. Neither agency publishes a split proportion for the ambiguous links, so harmonising actual occupation *counts* (not just categories) across SOC and ANZSCO via ISCO-08 requires supplying weights — the scenario xmap#14 proposes to illustrate using committee-style semantic-similarity judgments as `xmap_tbl` weights.
 
 See the issue for the full proposed vignette shape, reference year rationale (2016), and open questions.
+
+## Why SOC 2010 and ANZSCO 2013 v1.2 (and not SOC 2018)
+
+The goal is to compare US and Australian occupation counts for the same year, on the same classification (ISCO-08). That means each country's crosswalk to ISCO-08 has to be the version that was actually official in the chosen reference year.
+
+- **2016 as the reference year:** in the US, SOC 2010 remained BLS's operational classification all the way through 2018 — SOC 2018 wasn't adopted until the May 2019 data release. In Australia, ANZSCO 2013 Version 1.2 (with its own "correspondence to ISCO-08 v2" table) was the version in use for the August 2016 Census. 2016 is the latest year where both countries' classifications are unambiguously the current official version, without a mid-year revision on either side.
+- **SOC 2010, not SOC 2018:** since 2016 needs SOC 2010, not SOC 2018, that's the crosswalk vintage to source. The `xmap` package's placeholder data is currently named `demo$soc2018_isco8_crosswalk`, which is a misnomer left over from an earlier assumption — flagged in the [issue #14 comments](https://github.com/cynthiahqy/xmap/issues/14#issuecomment-5292821933) and worth fixing when the real data lands.
+- **ISCO-08 itself** isn't a vintage choice in the same sense — it's just the common international target both national crosswalks already map onto, so it's the natural meeting point for comparison rather than a decision with its own year attached.
