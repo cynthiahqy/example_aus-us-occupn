@@ -2,7 +2,32 @@
 
 Supporting materials for preparing the data assessment and background notes for [xmap#14](https://github.com/cynthiahqy/xmap/issues/14): harmonising USA (SOC) and Australia (ANZSCO) occupation counts to ISCO-08, with committee-judged semantic-similarity weights for the many-to-many links.
 
-This repo is not the vignette itself — it collects the source correspondence tables and reference material used to scope that work before any `xmap_tbl` construction begins.
+This repo is not the vignette itself — it collects the source correspondence tables and reference material used to scope that work before any `xmap_tbl` construction begins. Per [this comment](https://github.com/cynthiahqy/xmap/issues/14#issuecomment-5292821933), retrieving/documenting/licence-checking the source files has been split out of `xmap` and issue #14 into this repo specifically, to feed `data-raw/*.R` + `R/data.R` once ready to package. The vignette itself lives as a draft shell in `xmap` PR #26, currently using placeholder data (`demo$anzsco22_isco8_crosswalk` is a real ABS subset already in `xmap`; `demo$soc2018_isco8_crosswalk` is hand-authored, not yet real — and per the same comment, that name is a misnomer: the correct vintage is **SOC 2010**, not SOC 2018, for the proposed 2016 reference year).
+
+## Checklist before PR #26 can swap in real data
+
+From [issue #14](https://github.com/cynthiahqy/xmap/issues/14#issuecomment-5292821933):
+
+**1. `data-raw/` files (raw retrieved sources)**
+- [ ] ANZSCO 2013 v1.2 classification structure file
+- [ ] ANZSCO 2013 v1.2 → ISCO-08 v2 correspondence file
+- [ ] SOC 2010 classification structure file
+- [ ] SOC 2010 → ISCO-08 crosswalk file — still blocked, `bls.gov` 403s from automated tooling; needs a regular browser/session
+- [ ] BLS crosswalk methodology doc (`isco_soc_crosswalk_process.pdf` or current equivalent) — same BLS access blocker
+- [ ] Converted/tidied CSV versions of the above where the source is `.xls`/`.xlsx`, following the existing `xmap` convention (see `data-raw/indstat_rev3_masked_subset.csv` as the pattern) — keeps diffs small and avoids shipping proprietary binary formats
+- [ ] Masked/subsetted sample versions of any full-size USA/AUS occupation-count source data (real BLS OEWS / ABS Census counts), following the `timor_occupn`/`indstat_masked` masking pattern already used in `xmap`
+
+**2. Data documentation**
+- [ ] Per-file column definitions (code, description, target code, partial-match flag, etc.) — enough detail to write the `@describe{}` blocks `R/data.R` already uses for `demo`/`timor_occupn`/`indstat`
+- [ ] Row/column counts and coverage notes (how many occupation codes, which countries/years, full table vs. illustrative subset) — same level of detail as `indstat`'s roxygen docs
+- [ ] Confirmation of whether the ANZSCO/ISCO-08 `partial` flag's exact meaning is documented anywhere upstream — no live ABS page explaining the correspondence methodology was found (only an abbreviations glossary), so this may need to be inferred from the data or sourced from the BLS process PDF once reachable
+
+**3. Provenance information**
+- [ ] For every file: publisher, exact retrieval URL, retrieval date, classification vintage/version, licence/usage terms — fill in the directory-listing table below per file
+- [ ] Explicit vintage cross-check against the proposed 2016 reference year for both ANZSCO (2013 v1.2) and SOC (2010) — flag if either wasn't current for the full 2016 reference period
+- [ ] A decision on whether the real correspondence *structure* (which codes link to which) can be used as-is, or whether it also needs committee-judgment weights authored fresh against the real data — the currently-drafted vignette's weights are illustrative and tied to the placeholder crosswalk's specific rows, so they'll need re-deriving against whatever real many-to-many links show up
+
+Once this checklist is done, the next step is porting the real crosswalks into `xmap`'s `data-raw/` (replacing the placeholder `demo$soc2018_isco8_crosswalk`) and re-running the vignette against real data.
 
 ## Directory listing
 
